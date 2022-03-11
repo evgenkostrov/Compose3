@@ -1,44 +1,26 @@
-package com.narcissus.marketplace.ui.search
+package com.example.compose3
 
 import androidx.compose.animation.ExperimentalAnimationApi
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.layout.*
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Surface
 import androidx.compose.material.Text
-import androidx.compose.material.TextButton
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.platform.LocalFocusManager
-import androidx.compose.ui.platform.LocalSoftwareKeyboardController
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
-@OptIn(ExperimentalComposeUiApi::class)
+@ExperimentalComposeUiApi
 @ExperimentalAnimationApi
 @Composable
 fun SearchScreen(
@@ -50,14 +32,9 @@ fun SearchScreen(
             .fillMaxSize()
             .padding(4.dp),
     ) {
-
-        val context = LocalContext.current
-        val focusManager = LocalFocusManager.current
-        val keyboardController = LocalSoftwareKeyboardController.current
         val state = rememberSearchState(
             searchHistory = viewModel.searchHistoryList,
-
-            ) { query: TextFieldValue ->
+        ) { query: TextFieldValue ->
             viewModel.getResultList(query.text)
         }
 
@@ -69,7 +46,7 @@ fun SearchScreen(
             onBack = { state.query = TextFieldValue("") },
             searching = state.searching,
             focused = state.focused,
-            modifier = modifier,
+            modifier = modifier
         )
 
         when (state.searchContainer) {
@@ -81,16 +58,15 @@ fun SearchScreen(
                         .fillMaxWidth(),
                     contentAlignment = Alignment.Center,
                 ) {
-                    Text("❌ No Results!", fontSize = 24.sp, color = Color(0xffDD2C00))
+                    Text("No Results!", fontSize = 24.sp, color = Color.Black)
                 }
             }
 
             SearchContainer.History -> {
-                SuggestionGridLayout(suggestions = state.searchHistory) {
+                SearchHistoryLayout(searchHistoryList = state.searchHistory) {
                     var text = state.query.text
                     if (text.isEmpty()) text = it else text += " $it"
                     text.trim()
-                    // Set text and cursor position to end of text
                     state.query = TextFieldValue(text, TextRange(text.length))
                 }
             }
@@ -99,7 +75,7 @@ fun SearchScreen(
                 Box(
                     modifier = Modifier
                         .background(Color.White)
-                        .fillMaxSize(),
+                        .fillMaxSize()
                 )
             }
         }
@@ -107,25 +83,24 @@ fun SearchScreen(
 }
 
 @Composable
-fun SuggestionGridLayout(
+fun SearchHistoryLayout(
     modifier: Modifier = Modifier,
-    suggestions: List<SearchHistoryModel>,
+    searchHistoryList: List<SearchHistoryModel>,
     onSuggestionClick: (String) -> Unit,
 ) {
-
-   Row(
+    Column(
         modifier = modifier.padding(4.dp),
     ) {
-        suggestions.forEach { suggestionModel ->
+        searchHistoryList.forEach { searchHistoryModel ->
             ItemSearchHistory(
                 modifier = Modifier.padding(4.dp),
-                suggestion = suggestionModel,
+                searchHistory = searchHistoryModel,
                 onClick = {
                     onSuggestionClick(it.suggestion)
                 },
                 onCancel = {
 
-                },
+                }
             )
         }
     }
@@ -134,7 +109,7 @@ fun SuggestionGridLayout(
 @Composable
 fun ItemSearchHistory(
     modifier: Modifier = Modifier,
-    suggestion: SearchHistoryModel,
+    searchHistory: SearchHistoryModel,
     onClick: ((SearchHistoryModel) -> Unit)? = null,
     onCancel: ((SearchHistoryModel) -> Unit)? = null,
 ) {
@@ -143,21 +118,20 @@ fun ItemSearchHistory(
         modifier = Modifier
             .clickable {
                 onClick?.run {
-                    invoke(suggestion)
+                    invoke(searchHistory)
                 }
             }
             .padding(vertical = 8.dp, horizontal = 10.dp),
     ) {
-
         Text(
-            text = suggestion.suggestion,
+            text = searchHistory.suggestion,
             style = MaterialTheme.typography.body2,
             modifier = Modifier.padding(end = 8.dp),
         )
         IconButton(
             onClick = {
                 onCancel?.run {
-                    invoke(suggestion)
+                    invoke(searchHistory)
                 }
             },
             modifier = Modifier

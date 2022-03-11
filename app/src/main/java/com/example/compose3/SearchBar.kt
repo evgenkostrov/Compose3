@@ -1,4 +1,4 @@
-package com.narcissus.marketplace.ui.search
+package com.example.compose3
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.ExperimentalAnimationApi
@@ -42,7 +42,7 @@ import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 
 @ExperimentalAnimationApi
-@OptIn(ExperimentalComposeUiApi::class)
+@ExperimentalComposeUiApi
 @Composable
 fun SearchBar(
     query: TextFieldValue,
@@ -66,7 +66,6 @@ fun SearchBar(
     ) {
 
         AnimatedVisibility(visible = focused) {
-            // Back button
             IconButton(
                 modifier = Modifier.padding(start = 2.dp),
                 onClick = {
@@ -90,7 +89,7 @@ fun SearchBar(
     }
 }
 
-@OptIn(ExperimentalComposeUiApi::class)
+@ExperimentalComposeUiApi
 @Composable
 fun SearchTextField(
     query: TextFieldValue,
@@ -116,8 +115,8 @@ fun SearchTextField(
                         end = 16.dp
                     )
             ),
-        color = Color(0xffF5F5F5),
-        shape = RoundedCornerShape(percent = 50),
+        color = Color(0xffEBEFFF),
+        shape = RoundedCornerShape(8.dp),
     ) {
 
         CompositionLocalProvider(LocalContentAlpha provides ContentAlpha.medium) {

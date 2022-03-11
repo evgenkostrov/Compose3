@@ -1,4 +1,4 @@
-package com.narcissus.marketplace.ui.search
+package com.example.compose3
 
 data class SearchHistoryModel(
     val suggestion:String
